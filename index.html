@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ömər Aviator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #b30000; /* Qırmızı fon */
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        /* Fonun bulanıq olması */
+        .blur-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+
+        .modal {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: #333;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .continue-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .continue-button:hover {
+            background-color: #e65500;
+        }
+
+        /* Fırlat düyməsi */
+        .fırlat-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .fırlat-button:hover {
+            background-color: #e65500;
+        }
+
+        /* Çarx */
+        #wheel {
+            width: 200px;
+            height: 200px;
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLNUM24ad37q35Jc3tMqZ8Rcl8FytBIJlHbQ&s');
+            background-size: cover;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        /* Ox */
+        #arrow {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 50px;
+            background-image: url('https://e7.pngegg.com/pngimages/568/220/png-clipart-arrow-arah-arrow-blue-angle.png');
+            background-size: cover;
+            transform-origin: center bottom;
+            visibility: hidden; /* Ox gizlidir */
+        }
+
+        /* Hədiyyə al düyməsi */
+        .hediyye-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            display: none;
+            animation: showButton 1s forwards;
+        }
+
+        @keyframes showButton {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Çarxın fırlanması animasiyası */
+        @keyframes rotateWheel {
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Yeni eklenen yazı stili */
+        .site-info {
+            font-size: 14px;  /* Yazı boyutunu küçülttüm */
+            margin-bottom: 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .site-info h2 {
+            margin: 0;
+            font-size: 16px;  /* Alt yazıyı daha da küçültüm */
+        }
+
+        /* Ömər Aviator başlık stili */
+        h1 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- YouTube Video (səs) -->
+    <div id="audio-player">
+        <iframe id="yt-player" width="0" height="0" src="https://www.youtube.com/embed/dYxJ4HMW7ns?autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+
+    <!-- Fonun bulanıq olması -->
+    <div class="blur-background" id="blurBackground">
+        <div class="modal">
+            <h2 id="modalText">Telefonun işığını və səsini polnu edin</h2>
+            <button class="continue-button" onclick="continueToSite()">Dəvam et</button>
+        </div>
+    </div>
+
+    <!-- Yeni yazı, başlığın üstünde -->
+    <div class="site-info">
+        <h2>Ömər Novruzlu : Bu Sayt sizə həqiqi hədiyyələr bəxş edir. Şansın varsa İrəli gedəssən. Uğurlar sizə!</h2>
+    </div>
+
+    <!-- Başlıq -->
+    <h1>Ömər Aviator</h1>
+
+    <!-- Çarx ve Ox -->
+    <div id="wheel">
+        <div id="arrow"></div>
+    </div>
+
+    <!-- Fırlat düyməsi -->
+    <button class="fırlat-button" onclick="startWheel()">Fırlat</button>
+
+    <!-- Hədiyyə al düyməsi -->
+    <button class="hediyye-button" id="hediyyeButton" onclick="openGiftLink()">Hədiyyəni al</button>
+
+    <script>
+        let wheel = document.getElementById("wheel");
+        let arrow = document.getElementById("arrow");
+        let hediyyeButton = document.getElementById("hediyyeButton");
+        let ytPlayer = document.getElementById("yt-player");
+
+        // Sayfaya ilk giriş yapıldığında sesin aktif edilmesi
+        function enableAudio() {
+            // Videonun sesini aç
+            let ytSrc = ytPlayer.src.replace('mute=1', 'mute=0');
+            ytPlayer.src = ytSrc; // Mute parametresi kaldırıldı
+            ytPlayer.play(); // Videoyu başlat
+            // Sesi azalt
+            let player = document.getElementById('yt-player');
+            player.volume = 0.1; // Ses seviyesini %10 yap
+        }
+
+        // Çarxın fırlanması funksiyası
+        function startWheel() {
+            wheel.style.animation = "rotateWheel 3s ease-out forwards";
+            hediyyeButton.style.display = "none"; // Hədiyyə al düyməsini gizlət
+
+            // Çarxın 3 saniyə sonra dayandırılması
+            setTimeout(() => {
+                wheel.style.animation = "none"; // Çarxı dayandır
+                showGiftButton(); // Hədiyyə al düyməsini göstər
+            }, 3000);
+        }
+
+        // Hədiyyə al düyməsini göstərmək
+        function showGiftButton() {
+            hediyyeButton.style.display = "inline-block";
+        }
+
+        // Hədiyyə al düyməsinə basıldığında linkə yönlənmək
+        function openGiftLink() {
+            window.location.href = "https://Pablo-Restrepo.github.io/Troll-Page-Scream/";
+        }
+
+        // "Dəvam elə" düyməsinə basıldığında fonu və yazını gizlətmək
+        function continueToSite() {
+            const blurBackground = document.getElementById("blurBackground");
+            const modalText = document.getElementById("modalText");
+
+            blurBackground.style.opacity = '0';  // Görünürlüğü azalt
+            setTimeout(() => {
+                blurBackground.style.display = 'none'; // Fonu gizlət
+                modalText.style.opacity = '0'; // Yazını gizlət
+                enableAudio(); // Ses hemen açılacak
+            }, 500); // Ses hemen açılır, gecikme yok
+        }
+    </script>
+
+</body>
+</html>
